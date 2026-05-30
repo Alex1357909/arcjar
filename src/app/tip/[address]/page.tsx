@@ -335,7 +335,7 @@ export default function TipPage() {
               {creatorAddress}
             </p>
             <a href="/" className="send-btn mt-6 block text-center">
-              Create a Tip Jar
+              Create an ArcJar
             </a>
           </div>
         </div>
@@ -607,7 +607,15 @@ export default function TipPage() {
         )}
 
         {/* ── Footer ── */}
-        <div className="mt-6 text-center space-y-1.5 animate-fade-in" style={{ animationDelay: "0.3s", opacity: 0 }}>
+        <div className="mt-6 text-center space-y-2.5 animate-fade-in" style={{ animationDelay: "0.3s", opacity: 0 }}>
+          <img
+            src="/arcjar-logo.png"
+            alt="ArcJar"
+            height="32"
+            width="32"
+            className="mx-auto"
+            style={{ height: 32, width: "auto" }}
+          />
           <p className="text-xs text-muted">
             Powered by{" "}
             <span className="text-subtle font-medium">Arc</span>
@@ -619,7 +627,7 @@ export default function TipPage() {
               href="/"
               className="text-xs text-muted hover:text-primary-light transition-colors"
             >
-              Create your own Tip Jar
+              Create your own ArcJar
             </a>
             <span className="text-xs text-muted">·</span>
             <a

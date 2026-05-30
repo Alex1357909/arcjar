@@ -78,16 +78,19 @@ export default function CreateTipJarPage() {
       <div className="w-full max-w-[520px] animate-fade-in">
         {/* ── Header ── */}
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center mx-auto mb-4">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-light)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-            </svg>
-          </div>
+          <img
+            src="/arcjar-logo.png"
+            alt="ArcJar"
+            height="80"
+            width="80"
+            className="mx-auto mb-4"
+            style={{ height: 80, width: "auto" }}
+          />
           <h1 className="text-2xl font-semibold text-foreground">
-            Create your Tip Jar
+            Create your ArcJar
           </h1>
           <p className="text-sm text-subtle mt-2 max-w-[360px] mx-auto">
-            Set up a USDC tip page on Arc Testnet and share it with your audience
+            Get a shareable link. Receive USDC tips on Arc Testnet — instantly, no middlemen.
           </p>
         </div>
 

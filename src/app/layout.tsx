@@ -2,13 +2,16 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Tip Jar — Send USDC on Arc Testnet",
+  title: "ArcJar",
   description:
-    "Support your favorite creator by sending USDC tips on Arc Testnet. Powered by Circle App Kit SDK.",
+    "Send USDC tips on Arc Testnet — create your ArcJar",
+  icons: {
+    icon: "/arcjar-logo.png",
+  },
   openGraph: {
-    title: "Tip Jar — Send USDC on Arc Testnet",
+    title: "ArcJar",
     description:
-      "Support your favorite creator by sending USDC tips on Arc Testnet.",
+      "Send USDC tips on Arc Testnet — create your ArcJar",
     type: "website",
   },
 };
