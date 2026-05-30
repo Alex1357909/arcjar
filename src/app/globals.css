@@ -1,26 +1,302 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0D1B2F;
+  --foreground: #F5F5F8;
+  --surface: #1F2F44;
+  --surface-hover: #2A3D56;
+  --primary: #3E74BB;
+  --primary-light: #ACC6E9;
+  --primary-hover: #4a82cc;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.15);
+  --text-subtle: #C7C5D1;
+  --text-muted: #8B8A95;
+  --success: #8DD89F;
+  --success-bg: rgba(98, 226, 164, 0.15);
+  --error: #E86D7A;
+  --error-bg: rgba(232, 109, 122, 0.15);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-primary-hover: var(--primary-hover);
+  --color-border: var(--border);
+  --color-border-hover: var(--border-hover);
+  --color-subtle: var(--text-subtle);
+  --color-muted: var(--text-muted);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-error: var(--error);
+  --color-error-bg: var(--error-bg);
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 }
 
 body {
-  background: var(--background);
+  background: linear-gradient(180deg, #0D1B2F 0%, #0D1B2F 60%, #19354D 100%);
+  background-attachment: fixed;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+/* ───── Animations ───── */
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(62, 116, 187, 0.4); }
+  50% { box-shadow: 0 0 20px 4px rgba(62, 116, 187, 0.2); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s ease-out forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* ───── Glassmorphism Card ───── */
+
+.glass-card {
+  background: rgba(31, 47, 68, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.05) inset;
+}
+
+/* ───── Preset Tip Button ───── */
+
+.preset-btn {
+  position: relative;
+  padding: 0.625rem 1.25rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-subtle);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.preset-btn:hover {
+  border-color: rgba(172, 198, 233, 0.3);
+  background: rgba(172, 198, 233, 0.08);
+  color: var(--primary-light);
+  transform: translateY(-1px);
+}
+
+.preset-btn.active {
+  border-color: var(--primary);
+  background: rgba(62, 116, 187, 0.2);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(62, 116, 187, 0.15);
+}
+
+/* ───── Send Button ───── */
+
+.send-btn {
+  width: 100%;
+  padding: 0.875rem;
+  border-radius: 0.75rem;
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.send-btn:hover:not(:disabled) {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(62, 116, 187, 0.3);
+}
+
+.send-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.send-btn.pending {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ───── Connect Button ───── */
+
+.connect-btn {
+  width: 100%;
+  padding: 0.875rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--primary-light);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.connect-btn:hover {
+  border-color: var(--primary);
+  background: rgba(62, 116, 187, 0.1);
+  transform: translateY(-1px);
+}
+
+/* ───── Custom Input ───── */
+
+.custom-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--foreground);
+  font-size: 0.9375rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.custom-input::placeholder {
+  color: var(--text-muted);
+}
+
+.custom-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(62, 116, 187, 0.15);
+}
+
+/* ───── Status Messages ───── */
+
+.status-success {
+  background: var(--success-bg);
+  border: 1px solid rgba(141, 216, 159, 0.3);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  animation: slide-up 0.4s ease-out;
+}
+
+.status-error {
+  background: var(--error-bg);
+  border: 1px solid rgba(232, 109, 122, 0.3);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  animation: slide-up 0.4s ease-out;
+}
+
+/* ───── Transaction History ───── */
+
+.tx-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.15s ease;
+}
+
+.tx-row:last-child {
+  border-bottom: none;
+}
+
+.tx-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* ───── Scrollbar ───── */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ───── Spinner ───── */
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* ───── Connected Badge ───── */
+
+.connected-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(98, 226, 164, 0.12);
+  border: 1px solid rgba(141, 216, 159, 0.2);
+  color: var(--success);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.connected-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
 }
