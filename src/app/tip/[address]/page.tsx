@@ -315,36 +315,45 @@ export default function TipPage() {
   /* ── Invalid address guard ── */
   if (!isValidAddress) {
     return (
-      <main className="flex-1 flex items-center justify-center px-4 py-12">
-        <div className="w-full max-w-[480px] animate-fade-in">
-          <div className="glass-card rounded-2xl p-8 text-center">
-            <div className="w-14 h-14 rounded-full bg-error/15 border border-error/20 flex items-center justify-center mx-auto mb-4">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--error)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="15" y1="9" x2="9" y2="15" />
-                <line x1="9" y1="9" x2="15" y2="15" />
-              </svg>
+      <>
+        <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 50, padding: "12px 24px", display: "flex", alignItems: "center" }}>
+          <img src="/arcjar-logo.png" alt="ArcJar" height="120" width="120" style={{ height: 120, width: "auto", mixBlendMode: "screen" }} />
+        </nav>
+        <main className="flex-1 flex items-center justify-center px-4 py-12" style={{ paddingTop: 64 }}>
+          <div className="w-full max-w-[480px] animate-fade-in">
+            <div className="glass-card rounded-2xl p-8 text-center">
+              <div className="w-14 h-14 rounded-full bg-error/15 border border-error/20 flex items-center justify-center mx-auto mb-4">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--error)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="15" y1="9" x2="9" y2="15" />
+                  <line x1="9" y1="9" x2="15" y2="15" />
+                </svg>
+              </div>
+              <h1 className="text-xl font-semibold text-foreground mb-2">
+                Invalid wallet address
+              </h1>
+              <p className="text-sm text-subtle mb-4">
+                The address in this link doesn&apos;t appear to be valid.
+              </p>
+              <p className="text-xs text-muted font-mono break-all">
+                {creatorAddress}
+              </p>
+              <a href="/" className="send-btn mt-6 block text-center">
+                Create an ArcJar
+              </a>
             </div>
-            <h1 className="text-xl font-semibold text-foreground mb-2">
-              Invalid wallet address
-            </h1>
-            <p className="text-sm text-subtle mb-4">
-              The address in this link doesn&apos;t appear to be valid.
-            </p>
-            <p className="text-xs text-muted font-mono break-all">
-              {creatorAddress}
-            </p>
-            <a href="/" className="send-btn mt-6 block text-center">
-              Create an ArcJar
-            </a>
           </div>
-        </div>
-      </main>
+        </main>
+      </>
     );
   }
 
   return (
-    <main className="flex-1 flex items-center justify-center px-4 py-12">
+    <>
+      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 50, padding: "12px 24px", display: "flex", alignItems: "center" }}>
+        <img src="/arcjar-logo.png" alt="ArcJar" height="120" width="120" style={{ height: 120, width: "auto", mixBlendMode: "screen" }} />
+      </nav>
+      <main className="flex-1 flex items-center justify-center px-4 py-12" style={{ paddingTop: 64 }}>
       <div className="w-full max-w-[480px] animate-fade-in">
         {/* ── Glass Card ── */}
         <div className="glass-card rounded-2xl p-8">
@@ -642,7 +651,8 @@ export default function TipPage() {
           </div>
         </div>
       </div>
-    </main>
+      </main>
+    </>
   );
 }
 
