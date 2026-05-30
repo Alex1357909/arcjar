@@ -611,10 +611,10 @@ export default function TipPage() {
           <img
             src="/arcjar-logo.png"
             alt="ArcJar"
-            height="32"
-            width="32"
+            height="40"
+            width="40"
             className="mx-auto"
-            style={{ height: 32, width: "auto" }}
+            style={{ height: 40, width: "auto", mixBlendMode: "screen" as const }}
           />
           <p className="text-xs text-muted">
             Powered by{" "}

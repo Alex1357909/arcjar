@@ -74,25 +74,40 @@ export default function CreateTipJarPage() {
   }, [generatedUrl]);
 
   return (
-    <main className="flex-1 flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-[520px] animate-fade-in">
-        {/* ── Header ── */}
-        <div className="text-center mb-8">
-          <img
-            src="/arcjar-logo.png"
-            alt="ArcJar"
-            height="80"
-            width="80"
-            className="mx-auto mb-4"
-            style={{ height: 80, width: "auto" }}
-          />
-          <h1 className="text-2xl font-semibold text-foreground">
-            Create your ArcJar
-          </h1>
-          <p className="text-sm text-subtle mt-2 max-w-[360px] mx-auto">
-            Get a shareable link. Receive USDC tips on Arc Testnet — instantly, no middlemen.
-          </p>
-        </div>
+    <>
+      {/* ── Fixed Navbar ── */}
+      <nav
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          padding: "12px 24px",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <img
+          src="/arcjar-logo.png"
+          alt="ArcJar"
+          height="36"
+          width="36"
+          style={{ height: 120, width: "auto", mixBlendMode: "screen" }}
+        />
+      </nav>
+
+      <main className="flex-1 flex items-center justify-center px-4 py-12" style={{ paddingTop: 64 }}>
+        <div className="w-full max-w-[520px] animate-fade-in">
+          {/* ── Header ── */}
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-semibold text-foreground">
+              Create your ArcJar
+            </h1>
+            <p className="text-sm text-subtle mt-2 max-w-[360px] mx-auto">
+              Get a shareable link. Receive USDC tips on Arc Testnet — instantly, no middlemen.
+            </p>
+          </div>
 
         {/* ── Form Card ── */}
         <div className="glass-card rounded-2xl p-8">
@@ -261,6 +276,7 @@ export default function CreateTipJarPage() {
           </a>
         </div>
       </div>
-    </main>
+      </main>
+    </>
   );
 }
