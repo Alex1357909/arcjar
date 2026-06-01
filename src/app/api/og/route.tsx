@@ -1,20 +1,16 @@
 import { ImageResponse } from 'next/og'
+import { NextRequest } from 'next/server'
 
 export const runtime = 'edge'
-export const size = { width: 1200, height: 630 }
-export const contentType = 'image/png'
 
-export default async function Image({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ address: string }>
-  searchParams: Promise<{ name?: string; bio?: string }>
-}) {
-  const { address } = await params
-  const { name = 'Creator', bio = 'Building on Arc Testnet' } =
-    await searchParams
-  const shortAddress = address.slice(0, 6) + '...' + address.slice(-4)
+export async function GET(request: NextRequest) {
+  const { searchParams } = request.nextUrl
+  const name = searchParams.get('name') || 'Creator'
+  const bio = searchParams.get('bio') || 'Building on Arc Testnet'
+  const address = searchParams.get('address') || ''
+  const shortAddress = address
+    ? address.slice(0, 6) + '...' + address.slice(-4)
+    : ''
 
   return new ImageResponse(
     (
@@ -92,15 +88,17 @@ export default async function Image({
         </div>
 
         {/* Wallet address */}
-        <div
-          style={{
-            fontSize: '20px',
-            color: 'rgba(172,198,233,0.6)',
-            marginBottom: '16px',
-          }}
-        >
-          {shortAddress}
-        </div>
+        {shortAddress && (
+          <div
+            style={{
+              fontSize: '20px',
+              color: 'rgba(172,198,233,0.6)',
+              marginBottom: '16px',
+            }}
+          >
+            {shortAddress}
+          </div>
+        )}
 
         {/* ArcJar branding */}
         <div
@@ -116,6 +114,6 @@ export default async function Image({
         </div>
       </div>
     ),
-    { ...size },
+    { width: 1200, height: 630 },
   )
 }
