@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Navbar from "@/components/Navbar";
+import BuiltByBadge from "@/components/BuiltByBadge";
 
 /* ──────────── Helpers ──────────── */
 
@@ -30,6 +32,10 @@ export default function CreateTipJarPage() {
   const [generatedUrl, setGeneratedUrl] = useState("");
   const [copied, setCopied] = useState(false);
   const [addressError, setAddressError] = useState("");
+
+  /* ── Wallet state (decorative on landing page) ── */
+  const [account, setAccount] = useState<string | null>(null);
+  const [connecting, setConnecting] = useState(false);
 
   const canGenerate = name.trim() && address.trim() && isValidAddress(address);
 
@@ -73,31 +79,38 @@ export default function CreateTipJarPage() {
     }
   }, [generatedUrl]);
 
+  /* ── Wallet Connection (decorative) ── */
+
+  const connectWallet = useCallback(async () => {
+    if (typeof window === "undefined" || !window.ethereum) return;
+    setConnecting(true);
+    try {
+      const accounts = (await window.ethereum.request({
+        method: "eth_requestAccounts",
+      })) as string[];
+      setAccount(accounts[0] ?? null);
+    } catch {
+      // User rejected or no wallet
+    } finally {
+      setConnecting(false);
+    }
+  }, []);
+
+  const disconnectWallet = useCallback(() => {
+    setAccount(null);
+  }, []);
+
   return (
     <>
-      {/* ── Fixed Navbar ── */}
-      <nav
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 50,
-          padding: "12px 24px",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <img
-          src="/arcjar-logo.png"
-          alt="ArcJar"
-          height="36"
-          width="36"
-          style={{ height: 120, width: "auto", mixBlendMode: "screen" }}
-        />
-      </nav>
+      {/* ── Navbar ── */}
+      <Navbar
+        account={account}
+        connecting={connecting}
+        onConnect={connectWallet}
+        onDisconnect={disconnectWallet}
+      />
 
-      <main className="flex-1 flex items-center justify-center px-4 py-12" style={{ paddingTop: 64 }}>
+      <main className="flex-1 flex items-center justify-center px-4 py-12" style={{ paddingTop: 84 }}>
         <div className="w-full max-w-[520px] animate-fade-in">
           {/* ── Header ── */}
           <div className="text-center mb-8">
@@ -274,6 +287,9 @@ export default function CreateTipJarPage() {
           >
             Get testnet USDC →
           </a>
+          <div className="flex justify-center pt-2">
+            <BuiltByBadge />
+          </div>
         </div>
       </div>
       </main>

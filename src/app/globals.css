@@ -1,6 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
+/* ───── Dark Mode (default) ───── */
+
 :root {
   --background: #0D1B2F;
   --foreground: #F5F5F8;
@@ -17,6 +19,70 @@
   --success-bg: rgba(98, 226, 164, 0.15);
   --error: #E86D7A;
   --error-bg: rgba(232, 109, 122, 0.15);
+  --navbar-bg: rgba(13, 27, 47, 0.9);
+  --navbar-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(31, 47, 68, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: rgba(0, 0, 0, 0.3);
+  --glass-inset: rgba(255, 255, 255, 0.05);
+  --body-gradient-start: #0D1B2F;
+  --body-gradient-end: #19354D;
+  --input-bg: rgba(255, 255, 255, 0.04);
+  --btn-ghost-bg: rgba(255, 255, 255, 0.04);
+  --btn-ghost-border: rgba(255, 255, 255, 0.1);
+  --btn-ghost-hover-bg: rgba(172, 198, 233, 0.08);
+  --btn-ghost-hover-border: rgba(172, 198, 233, 0.3);
+  --scrollbar-thumb: rgba(255, 255, 255, 0.1);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.2);
+  --tx-row-hover: rgba(255, 255, 255, 0.03);
+  --tx-row-border: rgba(255, 255, 255, 0.05);
+  --badge-bg: rgba(255, 255, 255, 0.05);
+  --badge-border: rgba(255, 255, 255, 0.1);
+  --badge-label: rgba(255, 255, 255, 0.6);
+  --badge-link: #fff;
+  --logo-blend: screen;
+}
+
+/* ───── Light Mode ───── */
+
+html.light {
+  --background: #F4F6F9;
+  --foreground: #1A1A2E;
+  --surface: #FFFFFF;
+  --surface-hover: #F0F2F5;
+  --primary: #3E74BB;
+  --primary-light: #2A5FA0;
+  --primary-hover: #3368A8;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(0, 0, 0, 0.15);
+  --text-subtle: #555566;
+  --text-muted: #888899;
+  --success: #2D9F4F;
+  --success-bg: rgba(45, 159, 79, 0.1);
+  --error: #D44050;
+  --error-bg: rgba(212, 64, 80, 0.1);
+  --navbar-bg: rgba(255, 255, 255, 0.9);
+  --navbar-border: rgba(0, 0, 0, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-shadow: rgba(0, 0, 0, 0.06);
+  --glass-inset: rgba(255, 255, 255, 0.8);
+  --body-gradient-start: #F4F6F9;
+  --body-gradient-end: #E8ECF2;
+  --input-bg: rgba(0, 0, 0, 0.03);
+  --btn-ghost-bg: rgba(0, 0, 0, 0.03);
+  --btn-ghost-border: rgba(0, 0, 0, 0.1);
+  --btn-ghost-hover-bg: rgba(62, 116, 187, 0.08);
+  --btn-ghost-hover-border: rgba(62, 116, 187, 0.3);
+  --scrollbar-thumb: rgba(0, 0, 0, 0.1);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.2);
+  --tx-row-hover: rgba(0, 0, 0, 0.02);
+  --tx-row-border: rgba(0, 0, 0, 0.06);
+  --badge-bg: rgba(0, 0, 0, 0.04);
+  --badge-border: rgba(0, 0, 0, 0.08);
+  --badge-label: rgba(0, 0, 0, 0.5);
+  --badge-link: #1A1A2E;
+  --logo-blend: normal;
 }
 
 @theme inline {
@@ -39,7 +105,7 @@
 }
 
 body {
-  background: linear-gradient(180deg, #0D1B2F 0%, #0D1B2F 60%, #19354D 100%);
+  background: linear-gradient(180deg, var(--body-gradient-start) 0%, var(--body-gradient-start) 60%, var(--body-gradient-end) 100%);
   background-attachment: fixed;
   color: var(--foreground);
   font-family: "Inter", system-ui, -apple-system, sans-serif;
@@ -88,16 +154,160 @@ body {
   animation: spin 1s linear infinite;
 }
 
+/* ───── Navbar ───── */
+
+.arcjar-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: 60px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--navbar-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--navbar-border);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--foreground);
+  transition: opacity 0.2s ease;
+}
+
+.navbar-brand:hover {
+  opacity: 0.85;
+}
+
+.navbar-logo {
+  height: 36px;
+  width: auto;
+  mix-blend-mode: var(--logo-blend);
+}
+
+.navbar-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.theme-toggle-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--btn-ghost-bg);
+  color: var(--text-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--btn-ghost-hover-bg);
+}
+
+.navbar-wallet-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  font-family: inherit;
+}
+
+.navbar-wallet-btn:hover:not(:disabled) {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(62, 116, 187, 0.3);
+}
+
+.navbar-wallet-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.navbar-connected-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--btn-ghost-bg);
+  color: var(--foreground);
+  font-weight: 500;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  font-family: inherit;
+}
+
+.navbar-connected-btn:hover {
+  border-color: var(--error);
+  color: var(--error);
+}
+
+.navbar-green-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  flex-shrink: 0;
+}
+
+.navbar-wallet-text {
+  display: inline;
+}
+
+@media (max-width: 480px) {
+  .navbar-wallet-text {
+    display: none;
+  }
+  .arcjar-navbar {
+    padding: 0 16px;
+  }
+}
+
 /* ───── Glassmorphism Card ───── */
 
 .glass-card {
-  background: rgba(31, 47, 68, 0.6);
+  background: var(--glass-bg);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--glass-border);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    0 1px 0 rgba(255, 255, 255, 0.05) inset;
+    0 8px 32px var(--glass-shadow),
+    0 1px 0 var(--glass-inset) inset;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* ───── Preset Tip Button ───── */
@@ -106,8 +316,8 @@ body {
   position: relative;
   padding: 0.625rem 1.25rem;
   border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--btn-ghost-border);
+  background: var(--btn-ghost-bg);
   color: var(--text-subtle);
   font-weight: 500;
   font-size: 0.9375rem;
@@ -117,8 +327,8 @@ body {
 }
 
 .preset-btn:hover {
-  border-color: rgba(172, 198, 233, 0.3);
-  background: rgba(172, 198, 233, 0.08);
+  border-color: var(--btn-ghost-hover-border);
+  background: var(--btn-ghost-hover-bg);
   color: var(--primary-light);
   transform: translateY(-1px);
 }
@@ -128,6 +338,10 @@ body {
   background: rgba(62, 116, 187, 0.2);
   color: #fff;
   box-shadow: 0 0 16px rgba(62, 116, 187, 0.15);
+}
+
+html.light .preset-btn.active {
+  color: var(--primary);
 }
 
 /* ───── Send Button ───── */
@@ -172,7 +386,7 @@ body {
   padding: 0.875rem;
   border-radius: 0.75rem;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--btn-ghost-bg);
   color: var(--primary-light);
   font-weight: 600;
   font-size: 1rem;
@@ -194,12 +408,12 @@ body {
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--input-bg);
   color: var(--foreground);
   font-size: 0.9375rem;
   font-family: inherit;
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, background 0.3s ease;
 }
 
 .custom-input::placeholder {
@@ -236,7 +450,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--tx-row-border);
   transition: background 0.15s ease;
 }
 
@@ -245,7 +459,7 @@ body {
 }
 
 .tx-row:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--tx-row-hover);
 }
 
 /* ───── Scrollbar ───── */
@@ -259,12 +473,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--scrollbar-thumb);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--scrollbar-thumb-hover);
 }
 
 /* ───── Spinner ───── */
@@ -276,6 +490,11 @@ body {
   border-top-color: #fff;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
+}
+
+html.light .spinner {
+  border-color: rgba(0, 0, 0, 0.1);
+  border-top-color: var(--primary);
 }
 
 /* ───── Connected Badge ───── */
@@ -299,4 +518,34 @@ body {
   height: 6px;
   border-radius: 50%;
   background: var(--success);
+}
+
+/* ───── Built By Badge ───── */
+
+.built-by-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--badge-bg);
+  border: 1px solid var(--badge-border);
+  border-radius: 99px;
+  padding: 6px 12px 6px 6px;
+  font-size: 13px;
+  margin-top: 8px;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.built-by-label {
+  color: var(--badge-label);
+}
+
+.built-by-link {
+  color: var(--badge-link);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.built-by-link:hover {
+  color: var(--primary);
 }

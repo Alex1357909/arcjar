@@ -17,6 +17,8 @@ import {
   ARC_CHAIN_ID_HEX,
 } from "@/lib/arcChain";
 import type { TipStatus, TipTransaction } from "@/lib/types";
+import Navbar from "@/components/Navbar";
+import BuiltByBadge from "@/components/BuiltByBadge";
 
 /* ──────────────────── Constants ──────────────────── */
 
@@ -316,10 +318,13 @@ export default function TipPageClient() {
   if (!isValidAddress) {
     return (
       <>
-        <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 50, padding: "12px 24px", display: "flex", alignItems: "center" }}>
-          <img src="/arcjar-logo.png" alt="ArcJar" height="120" width="120" style={{ height: 120, width: "auto", mixBlendMode: "screen" }} />
-        </nav>
-        <main className="flex-1 flex items-center justify-center px-4 py-12" style={{ paddingTop: 64 }}>
+        <Navbar
+          account={account}
+          connecting={connecting}
+          onConnect={connectWallet}
+          onDisconnect={disconnect}
+        />
+        <main className="flex-1 flex items-center justify-center px-4 py-12" style={{ paddingTop: 84 }}>
           <div className="w-full max-w-[480px] animate-fade-in">
             <div className="glass-card rounded-2xl p-8 text-center">
               <div className="w-14 h-14 rounded-full bg-error/15 border border-error/20 flex items-center justify-center mx-auto mb-4">
@@ -350,10 +355,13 @@ export default function TipPageClient() {
 
   return (
     <>
-      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 50, padding: "12px 24px", display: "flex", alignItems: "center" }}>
-        <img src="/arcjar-logo.png" alt="ArcJar" height="120" width="120" style={{ height: 120, width: "auto", mixBlendMode: "screen" }} />
-      </nav>
-      <main className="flex-1 flex items-center justify-center px-4 py-12" style={{ paddingTop: 64 }}>
+      <Navbar
+        account={account}
+        connecting={connecting}
+        onConnect={connectWallet}
+        onDisconnect={disconnect}
+      />
+      <main className="flex-1 flex items-center justify-center px-4 py-12" style={{ paddingTop: 84 }}>
       <div className="w-full max-w-[480px] animate-fade-in">
         {/* ── Glass Card ── */}
         <div className="glass-card rounded-2xl p-8">
@@ -419,7 +427,7 @@ export default function TipPageClient() {
             />
           </div>
 
-          {/* ── Wallet Connection ── */}
+          {/* ── Wallet Connection (in-card, synced with navbar) ── */}
           {!account ? (
             <button
               className="connect-btn mb-4"
@@ -622,8 +630,8 @@ export default function TipPageClient() {
             alt="ArcJar"
             height="40"
             width="40"
-            className="mx-auto"
-            style={{ height: 40, width: "auto", mixBlendMode: "screen" as const }}
+            className="mx-auto navbar-logo"
+            style={{ height: 40, width: "auto" }}
           />
           <p className="text-xs text-muted">
             Powered by{" "}
@@ -648,6 +656,9 @@ export default function TipPageClient() {
             >
               Get testnet USDC →
             </a>
+          </div>
+          <div className="flex justify-center pt-1">
+            <BuiltByBadge />
           </div>
         </div>
       </div>
