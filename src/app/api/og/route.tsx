@@ -110,7 +110,7 @@ export async function GET(request: NextRequest) {
             color: 'rgba(255,255,255,0.4)',
           }}
         >
-          ArcJar · arc-tipjar-six.vercel.app
+          ArcJar · arcjar.vercel.app
         </div>
       </div>
     ),

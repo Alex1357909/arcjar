@@ -11,8 +11,8 @@ export async function generateMetadata({
   const { address } = await params
   const { name = 'Creator', bio = 'Building on Arc Testnet' } =
     await searchParams
-  const url = `https://arc-tipjar-six.vercel.app/tip/${address}`
-  const ogImage = `https://arc-tipjar-six.vercel.app/api/og?name=${encodeURIComponent(name)}&bio=${encodeURIComponent(bio)}&address=${encodeURIComponent(address)}`
+  const url = `https://arcjar.vercel.app/tip/${address}`
+  const ogImage = `https://arcjar.vercel.app/api/og?name=${encodeURIComponent(name)}&bio=${encodeURIComponent(bio)}&address=${encodeURIComponent(address)}`
 
   return {
     title: `Tip ${name} on Arc | ArcJar`,

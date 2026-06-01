@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     title: "ArcJar — USDC Tips on Arc Testnet",
     description:
       "Create your shareable tip page and receive USDC tips instantly.",
-    url: "https://arc-tipjar-six.vercel.app",
+    url: "https://arcjar.vercel.app",
     siteName: "ArcJar",
     type: "website",
   },
