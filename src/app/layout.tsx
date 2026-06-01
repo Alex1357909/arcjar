@@ -2,17 +2,25 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ArcJar",
+  title: "ArcJar — USDC Tips on Arc Testnet",
   description:
-    "Send USDC tips on Arc Testnet — create your ArcJar",
+    "Create your shareable tip page. Receive USDC instantly on Arc Testnet — no middlemen.",
   icons: {
     icon: "/arcjar-logo.png",
   },
   openGraph: {
-    title: "ArcJar",
+    title: "ArcJar — USDC Tips on Arc Testnet",
     description:
-      "Send USDC tips on Arc Testnet — create your ArcJar",
+      "Create your shareable tip page and receive USDC tips instantly.",
+    url: "https://arc-tipjar-six.vercel.app",
+    siteName: "ArcJar",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ArcJar — USDC Tips on Arc Testnet",
+    description:
+      "Create your shareable tip page and receive USDC tips instantly.",
   },
 };
 
