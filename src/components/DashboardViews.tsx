@@ -64,7 +64,9 @@ async function getTransferLogs(args: {
   const latest = await publicClient.getBlockNumber();
   const start = latest > SCAN_WINDOW ? latest - SCAN_WINDOW : 0n;
 
-  const collected: Awaited<ReturnType<typeof publicClient.getLogs>> = [];
+  // Accumulate raw Transfer logs across chunks. Untyped as a buffer — the
+  // call sites map them into the UI's own TransferLog shape.
+  const collected: any[] = [];
   // Walk backwards from the latest block in 10k chunks.
   for (let to = latest; to >= start; to = to - LOG_CHUNK - 1n) {
     const from = to - LOG_CHUNK + 1n < start ? start : to - LOG_CHUNK + 1n;
