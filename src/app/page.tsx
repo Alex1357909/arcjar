@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import BuiltByBadge from "@/components/BuiltByBadge";
+import DashboardLayout from "@/components/DashboardLayout";
+import { useWallet } from "@/components/WalletProvider";
 
 /* ──────────── Helpers ──────────── */
 
@@ -23,19 +26,33 @@ function truncateAddress(addr: string) {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
 }
 
+/* ──────────── Motion variants ──────────── */
+
+const stagger = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } },
+};
+
+const scaleIn = {
+  hidden: { opacity: 0, scale: 0.95 },
+  show: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } },
+};
+
 /* ━━━━━━━━━━━━━━━━━━━━ Component ━━━━━━━━━━━━━━━━━━━━ */
 
 export default function CreateTipJarPage() {
+  const { account } = useWallet();
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
   const [address, setAddress] = useState("");
   const [generatedUrl, setGeneratedUrl] = useState("");
   const [copied, setCopied] = useState(false);
   const [addressError, setAddressError] = useState("");
-
-  /* ── Wallet state (decorative on landing page) ── */
-  const [account, setAccount] = useState<string | null>(null);
-  const [connecting, setConnecting] = useState(false);
 
   const canGenerate = name.trim() && address.trim() && isValidAddress(address);
 
@@ -79,220 +96,225 @@ export default function CreateTipJarPage() {
     }
   }, [generatedUrl]);
 
-  /* ── Wallet Connection (decorative) ── */
-
-  const connectWallet = useCallback(async () => {
-    if (typeof window === "undefined" || !window.ethereum) return;
-    setConnecting(true);
-    try {
-      const accounts = (await window.ethereum.request({
-        method: "eth_requestAccounts",
-      })) as string[];
-      setAccount(accounts[0] ?? null);
-    } catch {
-      // User rejected or no wallet
-    } finally {
-      setConnecting(false);
-    }
-  }, []);
-
-  const disconnectWallet = useCallback(() => {
-    setAccount(null);
-  }, []);
-
   return (
     <>
       {/* ── Navbar ── */}
-      <Navbar
-        account={account}
-        connecting={connecting}
-        onConnect={connectWallet}
-        onDisconnect={disconnectWallet}
-      />
+      <Navbar />
 
-      <main className="flex-1 flex items-center justify-center px-4 py-12" style={{ paddingTop: 84 }}>
-        <div className="w-full max-w-[520px] animate-fade-in">
+      <DashboardLayout>
+        <main className="flex-1 flex items-center justify-center px-4 py-12" style={{ paddingTop: 80 }}>
+        <motion.div
+          className="w-full max-w-[520px]"
+          variants={stagger}
+          initial="hidden"
+          animate="show"
+        >
           {/* ── Header ── */}
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-semibold text-foreground">
-              Create your ArcJar
+          <motion.div className="text-center mb-10" variants={fadeUp}>
+            <h1 className="heading-display text-[2rem] sm:text-[2.375rem]">
+              Create your{" "}
+              <span className="text-gradient">ArcJar</span>
             </h1>
-            <p className="text-sm text-subtle mt-2 max-w-[360px] mx-auto">
-              Get a shareable link. Receive USDC tips on Arc Testnet — instantly, no middlemen.
+            <p className="text-[0.9375rem] mt-3 max-w-[400px] mx-auto leading-relaxed" style={{ color: 'var(--fg-dim)' }}>
+              Get a shareable link. Receive USDC tips on Arc — instantly, no middlemen.
             </p>
-          </div>
+          </motion.div>
 
-        {/* ── Form Card ── */}
-        <div className="glass-card rounded-2xl p-8">
-          {/* Name */}
-          <div className="mb-5">
-            <label htmlFor="creator-name" className="text-xs font-medium text-muted uppercase tracking-wider mb-2 block">
-              Your name
-            </label>
-            <input
-              id="creator-name"
-              type="text"
-              placeholder="Alex"
-              className="custom-input"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              maxLength={50}
-            />
-          </div>
-
-          {/* Bio */}
-          <div className="mb-5">
-            <label htmlFor="creator-bio" className="text-xs font-medium text-muted uppercase tracking-wider mb-2 block">
-              Short bio
-            </label>
-            <input
-              id="creator-bio"
-              type="text"
-              placeholder="Building on Arc"
-              className="custom-input"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              maxLength={120}
-            />
-          </div>
-
-          {/* Address */}
-          <div className="mb-6">
-            <label htmlFor="creator-address" className="text-xs font-medium text-muted uppercase tracking-wider mb-2 block">
-              Your Arc wallet address
-            </label>
-            <input
-              id="creator-address"
-              type="text"
-              placeholder="0x..."
-              className={`custom-input font-mono text-sm ${addressError ? "!border-error" : ""}`}
-              value={address}
-              onChange={(e) => {
-                setAddress(e.target.value);
-                setAddressError("");
-                setGeneratedUrl("");
-              }}
-              spellCheck={false}
-            />
-            {addressError && (
-              <p className="text-xs text-error mt-1.5">{addressError}</p>
-            )}
-          </div>
-
-          {/* Generate Button */}
-          <button
-            className="send-btn"
-            onClick={generateLink}
-            disabled={!name.trim() || !address.trim()}
-            id="generate-link-btn"
-          >
-            Generate my link
-          </button>
-
-          {/* ── Generated URL ── */}
-          {generatedUrl && (
-            <div className="mt-6 animate-slide-up">
-              <div className="h-px bg-border mb-6" />
-
-              <label className="text-xs font-medium text-muted uppercase tracking-wider mb-2 block">
-                Your tip jar link
+          {/* ── Form Card ── */}
+          <motion.div className="glass-card rounded-2xl p-7 sm:p-8" variants={scaleIn}>
+            {/* Name */}
+            <div className="mb-6">
+              <label htmlFor="creator-name" className="label-upper mb-2.5 block">
+                Your name
               </label>
+              <input
+                id="creator-name"
+                type="text"
+                placeholder="Alex"
+                className="custom-input"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                maxLength={50}
+              />
+            </div>
 
-              <div className="flex gap-2">
-                <div className="flex-1 custom-input !bg-surface/80 text-sm break-all cursor-text select-all overflow-hidden" style={{ wordBreak: "break-all" }}>
-                  {generatedUrl}
-                </div>
-                <button
-                  onClick={copyLink}
-                  className="preset-btn !px-4 !rounded-xl shrink-0 active"
-                  id="copy-link-btn"
+            {/* Bio */}
+            <div className="mb-6">
+              <label htmlFor="creator-bio" className="label-upper mb-2.5 block">
+                Short bio
+              </label>
+              <input
+                id="creator-bio"
+                type="text"
+                placeholder="Building on Arc"
+                className="custom-input"
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                maxLength={120}
+              />
+            </div>
+
+            {/* Address */}
+            <div className="mb-7">
+              <label htmlFor="creator-address" className="label-upper mb-2.5 block">
+                Your Arc wallet address
+              </label>
+              <input
+                id="creator-address"
+                type="text"
+                placeholder="0x..."
+                className={`custom-input font-mono text-sm ${addressError ? "!border-error" : ""}`}
+                value={address}
+                onChange={(e) => {
+                  setAddress(e.target.value);
+                  setAddressError("");
+                  setGeneratedUrl("");
+                }}
+                spellCheck={false}
+              />
+              {addressError && (
+                <motion.p
+                  className="text-xs text-error mt-1.5"
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
                 >
-                  {copied ? (
-                    <span className="flex items-center gap-1.5">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                      Copied
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-1.5">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                      </svg>
-                      Copy
-                    </span>
-                  )}
-                </button>
-              </div>
+                  {addressError}
+                </motion.p>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* ── Live Preview ── */}
-        {generatedUrl && (
-          <div className="mt-4 animate-fade-in" style={{ animationDelay: "0.15s", opacity: 0 }}>
-            <p className="text-xs font-medium text-muted uppercase tracking-wider mb-3 text-center">
-              Preview
-            </p>
-            <div className="glass-card rounded-2xl p-6 scale-[0.92] origin-top">
-              {/* Mini creator card preview */}
-              <div className="flex flex-col items-center text-center mb-5">
-                <div className="w-12 h-12 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center mb-3">
-                  <span className="text-sm font-semibold text-primary-light">
-                    {getInitials(name || "C")}
-                  </span>
-                </div>
-                <p className="text-base font-semibold text-foreground">
-                  {name || "Creator"}
-                </p>
-                {bio && (
-                  <p className="text-xs text-subtle mt-1">{bio}</p>
-                )}
-                <p className="text-xs text-muted mt-1 font-mono">
-                  {truncateAddress(address)}
-                </p>
-              </div>
-              <div className="h-px bg-border mb-4" />
-              {/* Fake preset buttons */}
-              <div className="flex gap-2 mb-4">
-                {[1, 5, 10, 25].map((a) => (
-                  <div key={a} className="preset-btn flex-1 text-center text-xs pointer-events-none">
-                    ${a}
+            {/* Generate Button */}
+            <motion.button
+              className="send-btn"
+              onClick={generateLink}
+              disabled={!name.trim() || !address.trim()}
+              id="generate-link-btn"
+              whileTap={{ scale: 0.98 }}
+            >
+              Generate my link
+            </motion.button>
+
+            {/* ── Generated URL ── */}
+            <AnimatePresence>
+              {generatedUrl && (
+                <motion.div
+                  className="mt-6"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <div className="divider-gradient mb-6" />
+
+                  <label className="label-upper mb-2.5 block">
+                    Your tip jar link
+                  </label>
+
+                  <div className="flex gap-2">
+                    <div className="flex-1 custom-input text-sm break-all cursor-text select-all overflow-hidden" style={{ wordBreak: "break-all", background: 'var(--input-bg)' }}>
+                      {generatedUrl}
+                    </div>
+                    <motion.button
+                      onClick={copyLink}
+                      className="preset-btn !px-4 !rounded-xl shrink-0 active"
+                      id="copy-link-btn"
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      {copied ? (
+                        <span className="flex items-center gap-1.5">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                          Copied
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1.5">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                          </svg>
+                          Copy
+                        </span>
+                      )}
+                    </motion.button>
                   </div>
-                ))}
-              </div>
-              {/* Fake send button */}
-              <div className="send-btn text-center text-sm opacity-60 pointer-events-none">
-                Connect Wallet
-              </div>
-            </div>
-          </div>
-        )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
 
-        {/* ── Footer ── */}
-        <div className="mt-6 text-center space-y-1.5 animate-fade-in" style={{ animationDelay: "0.3s", opacity: 0 }}>
-          <p className="text-xs text-muted">
-            Powered by{" "}
-            <span className="text-subtle font-medium">Arc</span>
-            {" · "}
-            <span className="text-subtle font-medium">USDC</span>
-          </p>
-          <a
-            href="https://faucet.circle.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-muted hover:text-primary-light transition-colors"
-            id="faucet-link"
-          >
-            Get testnet USDC →
-          </a>
-          <div className="flex justify-center pt-2">
-            <BuiltByBadge />
-          </div>
-        </div>
-      </div>
+          {/* ── Live Preview ── */}
+          <AnimatePresence>
+            {generatedUrl && (
+              <motion.div
+                className="mt-5"
+                initial={{ opacity: 0, y: 16, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 8 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+              >
+                <p className="label-upper mb-3 text-center">
+                  Preview
+                </p>
+                <div className="glass-card rounded-2xl p-5 scale-[0.92] origin-top">
+                  {/* Mini creator card preview */}
+                  <div className="flex flex-col items-center text-center mb-4">
+                    <div className="avatar-ring mb-3">
+                      <div className="w-11 h-11 rounded-full flex items-center justify-center" style={{ background: 'var(--accent-glow)' }}>
+                        <span className="text-sm font-semibold text-primary-light">
+                          {getInitials(name || "C")}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="heading-section text-[0.9375rem]">
+                      {name || "Creator"}
+                    </p>
+                    {bio && (
+                      <p className="text-xs mt-1" style={{ color: 'var(--fg-dim)' }}>{bio}</p>
+                    )}
+                    <p className="text-xs mt-1 font-mono" style={{ color: 'var(--fg-muted)' }}>
+                      {truncateAddress(address)}
+                    </p>
+                  </div>
+                  <div className="divider-gradient mb-4" />
+                  {/* Fake preset buttons */}
+                  <div className="grid grid-cols-4 gap-2 mb-4">
+                    {[1, 5, 10, 25].map((a) => (
+                      <div key={a} className="preset-btn text-center text-xs pointer-events-none">
+                        ${a}
+                      </div>
+                    ))}
+                  </div>
+                  {/* Fake send button */}
+                  <div className="send-btn text-center text-sm opacity-40 pointer-events-none">
+                    Connect Wallet
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* ── Footer ── */}
+          <motion.div className="mt-10 text-center space-y-2" variants={fadeUp}>
+            <p className="powered-text">
+              Powered by <strong>Arc</strong> · <strong>USDC</strong>
+            </p>
+            <a
+              href="https://faucet.circle.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-link"
+              id="faucet-link"
+            >
+              Get testnet USDC →
+            </a>
+            <div className="flex justify-center pt-2">
+              <BuiltByBadge />
+            </div>
+          </motion.div>
+        </motion.div>
       </main>
+      </DashboardLayout>
     </>
   );
 }

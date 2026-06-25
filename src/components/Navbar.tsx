@@ -1,6 +1,7 @@
 "use client";
 
 import { useTheme } from "./ThemeProvider";
+import { useWallet } from "./WalletProvider";
 
 /* ──────────── Helpers ──────────── */
 
@@ -45,19 +46,8 @@ function WalletIcon() {
 
 /* ──────────── Component ──────────── */
 
-interface NavbarProps {
-  account: string | null;
-  connecting: boolean;
-  onConnect: () => void;
-  onDisconnect: () => void;
-}
-
-export default function Navbar({
-  account,
-  connecting,
-  onConnect,
-  onDisconnect,
-}: NavbarProps) {
+export default function Navbar() {
+  const { account, connecting, connectWallet, disconnectWallet } = useWallet();
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -67,8 +57,8 @@ export default function Navbar({
         <img
           src="/arcjar-logo.png"
           alt="ArcJar"
-          width="36"
-          height="36"
+          width="28"
+          height="28"
           className="navbar-logo"
         />
         <span className="navbar-title">ArcJar</span>
@@ -89,7 +79,7 @@ export default function Navbar({
         {/* Wallet button */}
         {!account ? (
           <button
-            onClick={onConnect}
+            onClick={connectWallet}
             disabled={connecting}
             className="navbar-wallet-btn"
             id="navbar-connect-btn"
@@ -108,7 +98,7 @@ export default function Navbar({
           </button>
         ) : (
           <button
-            onClick={onDisconnect}
+            onClick={disconnectWallet}
             className="navbar-connected-btn"
             id="navbar-connected-btn"
           >
