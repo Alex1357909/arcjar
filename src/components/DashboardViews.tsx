@@ -222,6 +222,35 @@ export function OverviewView() {
               <p>No tips received yet. Share your ArcJar link to get started.</p>
             </div>
           )}
+
+          {/* Goal Progress tip card */}
+          <div
+            className="rounded-xl p-4 mt-4"
+            style={{
+              border: '1px solid rgba(255,255,255,0.10)',
+              background: 'rgba(255,255,255,0.04)',
+            }}
+          >
+            <div className="flex items-start gap-3">
+              <span style={{ fontSize: 22 }}>🎯</span>
+              <div className="flex-1">
+                <p className="text-sm font-medium mb-1" style={{ color: 'var(--fg)' }}>
+                  Tip: Add a fundraising goal to your ArcJar link
+                </p>
+                <p className="text-xs mb-3" style={{ color: 'var(--fg-muted)' }}>
+                  Show donors what you&apos;re raising for — a progress bar will appear on your tip page.
+                </p>
+                <a
+                  href="/"
+                  className="dashboard-link-btn"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 4, textDecoration: 'none' }}
+                  id="create-goal-link-btn"
+                >
+                  Create link with goal →
+                </a>
+              </div>
+            </div>
+          </div>
         </>
       )}
     </motion.div>

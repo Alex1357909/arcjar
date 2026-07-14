@@ -104,6 +104,11 @@ export default function TipPageClient() {
   const creatorName = searchParams.get("name") ?? "Creator";
   const creatorBio = searchParams.get("bio") ?? "";
 
+  /* ── Goal params ── */
+  const goalParam = searchParams.get("goal");
+  const goal = goalParam ? Number(goalParam) : null;
+  const goalDesc = searchParams.get("goalDesc") || null;
+
   /* ── Wallet state ── */
   const { account, connecting, connectWallet, disconnectWallet } = useWallet();
 
@@ -122,6 +127,10 @@ export default function TipPageClient() {
 
   /* ── Success modal state ── */
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  /* ── Goal progress state ── */
+  const [goalLoading, setGoalLoading] = useState(false);
+  const [totalReceived, setTotalReceived] = useState<number | null>(null);
 
   /* ── Derived amount ── */
   const finalAmount =
@@ -246,11 +255,55 @@ export default function TipPageClient() {
     setShowSuccessModal(false);
   }, []);
 
+  /* ────────────── Fetch Goal Progress ────────────── */
+
+  const fetchGoalProgress = useCallback(async () => {
+    if (!goal || !creatorAddress || !isValidAddress) return;
+
+    const LOG_CHUNK = 10_000n;
+    const SCAN_WINDOW = 500_000n;
+
+    setGoalLoading(true);
+    try {
+      const latest = await publicClient.getBlockNumber();
+      const start = latest > SCAN_WINDOW ? latest - SCAN_WINDOW : 0n;
+
+      let sum = 0n;
+      for (let to = latest; to >= start; to = to - LOG_CHUNK - 1n) {
+        const from = to - LOG_CHUNK + 1n < start ? start : to - LOG_CHUNK + 1n;
+        try {
+          const batch = await publicClient.getLogs({
+            address: USDC_ADDRESS,
+            event: TRANSFER_EVENT,
+            args: { to: creatorAddress as `0x${string}` },
+            fromBlock: from,
+            toBlock: to,
+          });
+          for (const log of batch) {
+            sum += (log.args.value as bigint) ?? 0n;
+          }
+        } catch {
+          // ignore individual chunk failures
+        }
+      }
+
+      setTotalReceived(parseFloat(formatUnits(sum, USDC_DECIMALS)));
+    } catch {
+      // on failure, hide the goal section (leave totalReceived as null)
+    } finally {
+      setGoalLoading(false);
+    }
+  }, [goal, creatorAddress, isValidAddress]);
+
   /* ────────────── Effects ────────────── */
 
   useEffect(() => {
     fetchHistory();
   }, [fetchHistory]);
+
+  useEffect(() => {
+    fetchGoalProgress();
+  }, [fetchGoalProgress]);
 
 
 
@@ -402,6 +455,86 @@ export default function TipPageClient() {
                 {truncateAddress(creatorAddress)}
               </p>
             </div>
+
+            {/* ── Goal Progress Bar ── */}
+            {goal !== null && goalDesc && (
+              goalLoading ? (
+                /* Skeleton */
+                <div
+                  className="rounded-xl mb-6 p-4"
+                  style={{
+                    border: '1px solid rgba(255,255,255,0.10)',
+                    background: 'rgba(255,255,255,0.04)',
+                  }}
+                >
+                  <div
+                    className="h-3 rounded-full mb-3 animate-pulse"
+                    style={{ background: 'rgba(255,255,255,0.12)', width: '60%' }}
+                  />
+                  <div
+                    className="h-3 rounded-full mb-3 animate-pulse"
+                    style={{ background: 'rgba(255,255,255,0.08)', width: '100%' }}
+                  />
+                  <div
+                    className="h-2 rounded-full animate-pulse"
+                    style={{ background: 'rgba(255,255,255,0.06)', width: '45%' }}
+                  />
+                </div>
+              ) : totalReceived !== null ? (
+                /* Real bar */
+                (() => {
+                  const pct = Math.min((totalReceived / goal) * 100, 100);
+                  const reached = totalReceived >= goal;
+                  return (
+                    <div
+                      className="rounded-xl mb-6 p-4"
+                      style={{
+                        border: '1px solid rgba(255,255,255,0.10)',
+                        background: 'rgba(255,255,255,0.05)',
+                      }}
+                    >
+                      {/* Header row */}
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium" style={{ color: 'var(--fg)' }}>
+                          🎯 {goalDesc}
+                        </span>
+                        <span className="text-xs font-semibold" style={{ color: reached ? '#4ade80' : 'var(--accent-text)' }}>
+                          {Math.round(pct)}%
+                        </span>
+                      </div>
+
+                      {/* Bar track */}
+                      <div
+                        className="h-3 rounded-full overflow-hidden mb-2"
+                        style={{ background: 'rgba(255,255,255,0.10)' }}
+                      >
+                        <div
+                          className="h-3 rounded-full"
+                          style={{
+                            width: `${pct}%`,
+                            background: reached
+                              ? 'linear-gradient(90deg, #22c55e, #4ade80)'
+                              : 'linear-gradient(90deg, #3E74BB, #ACC6E9)',
+                            transition: 'width 0.8s ease',
+                          }}
+                        />
+                      </div>
+
+                      {/* Stats row */}
+                      {reached ? (
+                        <p className="text-xs font-medium" style={{ color: '#4ade80' }}>
+                          🎉 Goal reached! Thank you!
+                        </p>
+                      ) : (
+                        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.60)', fontSize: 13 }}>
+                          ${totalReceived.toFixed(2)} raised of ${goal.toFixed(2)} goal
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()
+              ) : null /* hide on error */
+            )}
 
             {/* ── Divider ── */}
             <div className="divider-gradient mb-6" />

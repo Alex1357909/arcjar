@@ -50,6 +50,8 @@ export default function CreateTipJarPage() {
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
   const [address, setAddress] = useState("");
+  const [goalAmount, setGoalAmount] = useState("");
+  const [goalDesc, setGoalDesc] = useState("");
   const [generatedUrl, setGeneratedUrl] = useState("");
   const [copied, setCopied] = useState(false);
   const [addressError, setAddressError] = useState("");
@@ -70,12 +72,17 @@ export default function CreateTipJarPage() {
     if (bio.trim()) {
       params.set("bio", bio.trim());
     }
+    // Only append goal if BOTH amount and description are filled
+    if (goalAmount.trim() && goalDesc.trim()) {
+      params.set("goal", goalAmount.trim());
+      params.set("goalDesc", goalDesc.trim());
+    }
 
     const origin = typeof window !== "undefined" ? window.location.origin : "";
     const url = `${origin}/tip/${address}?${params.toString()}`;
     setGeneratedUrl(url);
     setCopied(false);
-  }, [name, bio, address, canGenerate]);
+  }, [name, bio, address, goalAmount, goalDesc, canGenerate]);
 
   const copyLink = useCallback(async () => {
     if (!generatedUrl) return;
@@ -152,6 +159,38 @@ export default function CreateTipJarPage() {
                 onChange={(e) => setBio(e.target.value)}
                 maxLength={120}
               />
+            </div>
+
+            {/* Fundraising Goal */}
+            <div className="mb-6">
+              <label className="label-upper mb-2.5 block">
+                Fundraising Goal <span style={{ color: 'var(--fg-muted)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
+              </label>
+              <div className="flex gap-2">
+                <input
+                  id="goal-amount"
+                  type="number"
+                  placeholder="Amount in USDC"
+                  className="custom-input"
+                  style={{ width: 152, flexShrink: 0 }}
+                  min="1"
+                  value={goalAmount}
+                  onChange={(e) => { setGoalAmount(e.target.value); setGeneratedUrl(""); }}
+                />
+                <input
+                  id="goal-desc"
+                  type="text"
+                  placeholder="e.g. New microphone, Server costs"
+                  className="custom-input"
+                  style={{ flex: 1 }}
+                  value={goalDesc}
+                  onChange={(e) => { setGoalDesc(e.target.value); setGeneratedUrl(""); }}
+                  maxLength={80}
+                />
+              </div>
+              <p className="text-xs mt-1.5" style={{ color: 'var(--fg-muted)' }}>
+                Donors will see a progress bar on your tip page
+              </p>
             </div>
 
             {/* Address */}
